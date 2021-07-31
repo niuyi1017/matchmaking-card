@@ -1,0 +1,89 @@
+{
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {}
+		},
+		
+		{
+			"path" : "pages/home/home",
+			"style" : {}
+		},
+		{
+			"path" : "pages/location/location",
+			"style" : {}
+		},
+		{
+			"path" : "pages/location/newLocation",
+			"style" : {
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path" : "pages/order/order",
+			"style" : {}
+		},
+		{
+			"path" : "pages/my/my",
+			"style" : {}
+		},
+		{
+			"path" : "pages/location/myAddrs",
+			"style" : {
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path" : "pages/promotion/promotion",
+			"style" : {}
+    },
+		{
+			"path" : "pages/search/search",
+			"style" : {}
+    },
+		{
+			"path" : "pages/order/settlement",
+			"style" : {
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path" : "pages/order/orderDetail",
+			"style" : {
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path" : "pages/shop-center/shop-center",
+			"style" :                                                                                    
+			{
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+			}
+
+		}
+    ],
+	"globalStyle": {
+		"mp-alipay": {
+			/* 支付宝小程序特有相关 */
+			"transparentTitle": "always",
+			"allowsBounceVertical": "NO"
+		},
+		"navigationBarBackgroundColor": "#0081ff",
+		"navigationBarTitleText": "优鼎优凉拌坊",
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "white"
+	},
+	"usingComponts": true,
+	"condition": { //模式配置，仅开发期间生效
+	"current": 0, //当前激活的模式(list 的索引项)
+	"list": [{
+			"name": "表单", //模式名称
+			"path": "pages/component/form", //启动页面
+			"query": "" //启动参数
+		}
+	]
+	}
+	
+}
