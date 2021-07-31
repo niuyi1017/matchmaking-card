@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import App from './App'
 
-import home from './pages/home/home.vue'
-Vue.component('home',home)
+import showInfo from './pages/showInfo/showInfo.vue'
+Vue.component('showInfo',showInfo)
+import fillInfo from './pages/fillInfo/fillInfo.vue'
+Vue.component('fillInfo',fillInfo)
 
-import order from './pages/order/order.vue'
-Vue.component('order',order)
+// import home from './pages/home/home.vue'
+// Vue.component('home',home)
 
-import my from './pages/my/my.vue'
-Vue.component('my',my)
+// import order from './pages/order/order.vue'
+// Vue.component('order',order)
+
+// import my from './pages/my/my.vue'
+// Vue.component('my',my)
 
 import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom',cuCustom)
