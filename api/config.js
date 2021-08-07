@@ -1,6 +1,6 @@
 
 
-const apiUrl = process.env.NODE_ENV === 'development' ? 'http://sditer.com:10088/api/v1/index' : "http://sditer.com:10088/api/v1/index"
+const apiUrl = process.env.NODE_ENV === 'development' ? 'https://takeouttest.niuy.xyz/v1' : "https://takeouttest.niuy.xyz/v1"
 
 
 /**
@@ -16,7 +16,7 @@ function request(method, url ,params, withToken=false) {
 				}
 				// console.log(params)
         uni.request({
-            url: "https://takeouttest.niuy.xyz/v1" + url,
+            url: apiUrl + url,
             data: params,
             method,
             header,

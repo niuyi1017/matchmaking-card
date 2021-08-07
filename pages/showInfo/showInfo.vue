@@ -3,8 +3,10 @@
 		<view  class="page" >
 			<!-- header -->
 			<view class="home-header " :style="[{height:CustomBar + 'rpx'}]">
-				<view class="loaction-wrapper " :style="[{top:StatusBar + 'px'}]" @click="gotoEdit">
-					<view class="edit-btn">修改</view>
+				<view class="loaction-wrapper " :style="[{top:StatusBar + 'px'}]" >
+					<view v-if="isSelf" class="edit-btn" @click="toEdit">修改</view>
+					<!-- 若不是本人，则点击返回去填报自己的信息 -->
+					<view v-else class="edit-btn" @click="toEdit">返回</view>
 				</view>
 			</view>
 			
@@ -18,50 +20,58 @@
 								<image class="avatar-img" src="../../static/avatar_default.png" mode=""></image>
 							</view>
 							<view class="avatar-text">
-								<text>用户名</text>
+								<text>{{username||"--"}}</text>
 							</view>
 						</view>
 						 <!-- 基础信息 -->
 						<view class="base-info-wrapper">
 								<view class="info-item">
 									<view class="info-item-key"><text>身</text><text>高:</text></view>
-									<text class="info-item-value">170cm</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="height">{{height}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>学</text><text>历:</text></view>
-									<text class="info-item-value">本科</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="eduBackground != -1">{{eduBackgroundOption[eduBackground]}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>户</text><text>籍:</text></view>
-									<text class="info-item-value">山东省济南市</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="register">{{register}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>现</text><text>居</text><text>地:</text></text></view>
-									<text class="info-item-value">山东省济南市</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="address">{{address}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>月</text><text>收</text><text>入:</text></view>
-									<text class="info-item-value">1万到2万</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="monthlyIncome != -1">{{mouthluIncomeOptions[monthlyIncome]}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>婚</text><text>姻</text><text>状</text><text>况:</text></view>
-									<text class="info-item-value">1w到2万</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="maritalStatus != -1">{{maritalStatusOptions[maritalStatus]}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>住</text><text>房:</text></view>
-									<text class="info-item-value">以购房有贷款</text>
-									<!-- <text class="info-item-fill">+点击填写</text> -->
+									<text class="info-item-value" v-if="houseStatus != -1">{{houseStatusOptions[houseStatus]}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								<view class="info-item">
 									<view class="info-item-key"><text>车</text><text>辆:</text></view>
-									<!-- <text class="info-item-value">以购房有贷款</text> -->
-									<text class="info-item-fill">+点击填写</text>
+									<text class="info-item-value" v-if="carStatus != -1">{{carStatusOptions[carStatus]}}</text>
+									<text class="info-item-fill" v-else-if="isSelf">+点击填写</text>
+									<text class="info-item-fill" v-else>暂未填写</text>
 								</view>
 								
 						 </view>
@@ -70,8 +80,15 @@
 							<view class="section-title">
 								生活照
 							</view>
-							<view class="life-pics-box">
+							
+							<view class="life-pics-box" v-if="lifePhotoList.length==0">
 								<text class="left-pic-add-icon">+</text>
+							</view>
+								<view class="grid col-4 grid-square flex-sub">
+							<view class="bg-img" v-for="(item,index) in lifePhotoList" :key="index"
+								@tap="ViewImage" :data-url="lifePhotoList[index]">
+								<image :src="lifePhotoList[index]" mode="aspectFill"></image>
+							</view>
 							</view>
 						</view>
 						
@@ -80,12 +97,12 @@
 							<view class="section-title">
 								详细描述
 							</view>
-							<!-- <view class="detail-desc-text">
-								<text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non ad commodi dolor saepe fugiat minus consequuntur similique modi illum blanditiis autem perspiciatis beatae odit quis placeat facere at officiis aliquid.</text>
-							</view> -->
-							<view class="no-data">
+							<view class="detail-desc-text" v-if="detailDesc">
+								<text>{{detailDesc}}</text>
+							</view>
+							<view class="no-data" v-else>
 								<text class="not-fill">暂未填写</text>
-								<text class="to-fill">+添加详细资料</text>
+								<text class="to-fill" v-if="isSelf">+添加详细资料</text>
 							</view>
 						</view>
 							
@@ -94,12 +111,13 @@
 							<view class="section-title">
 								择偶标准
 							</view>
-							<!-- <view class="detail-desc-text">
-								<text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non ad commodi dolor saepe fugiat minus consequuntur similique modi illum blanditiis autem perspiciatis beatae odit quis placeat facere at officiis aliquid.</text>
-							</view> -->
-							<view class="no-data">
+							<view class="detail-desc-text" v-if="standard">
+								<text>{{standard}}</text>
+							</view>
+							
+							<view class="no-data" v-else>
 								<text class="not-fill">暂未填写</text>
-								<text class="to-fill">+添加详细资料</text>
+								<text class="to-fill" v-if="isSelf">+添加择偶标准</text>
 							</view>
 						</view>
 							
@@ -119,57 +137,65 @@
 
 <script>
 	
-	import { getIndexData, getGoodList } from "../../api/api.js"
+	import { getIndexData } from "../../api/api.js"
 	export default {
 		name: "home",
-		components:{
-			
-		},
 		data() {
 			return {
 				StatusBar:  this.StatusBar+8,
 				CustomBar: this.CustomBar+90,
+				// 是在看自己的信息还是别人的信息
+				isSelf: true,
+				// 当前展示的信息的用户id
+				userId:"",
+				// 当前登录用户的id
+				currentUserId: "",
+				
+				avatarUrl: "",
+				height: "",
+				weight: "",
+				eduBackground: -1,
+				register: "",
+				address: "",
+				monthlyIncome: -1,
+				maritalStatus:-1,
+				houseStatus: -1,
+				carStatus: -1,
+				lifePhotoList: ['https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big81005.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
+					'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg'],
+				detailDesc: "",
+				standard: "",
+				
+				mouthluIncomeOptions:[""],
+				maritalStatusOptions:[""],
+				houseStatusOptions:[""],
+				carStatusOptions:[""],
 				
 			}
 		},
-		computed:{
-			
 		
-			
-		},
 		mounted() {
-			
-			
-			
-		},
-		onShow() {
-			
+			// this._getIndexData()
 		},
 		methods:{
-			
-			toPromotion(){
+			toEdit(){
 				uni.navigateTo({
-					url:"../promotion/promotion"
+					url:"../fillInfo/fillInfo?userId=123"
 				})
 			},
-			
-			
-			
-			// 跳转到地址选择页
-			gotoLocation(){
-				uni.navigateTo({
-					url: '../location/location'
-				})
+			ViewImage(e) {
+				uni.previewImage({
+					urls: this.lifePhotoList,
+					current: e.currentTarget.dataset.url
+				});
 			},
-			
-			// 跳转到搜索页
-			gotoSearch(){
-				let hotSearchList = this.hotSearchList
-				uni.navigateTo({
-					url: `../search/search?hotSearchList=` + encodeURIComponent(JSON.stringify(hotSearchList))
-				})
-			},
-		
+			_getIndexData(){
+				getIndexData().then(res => {
+					console.log(res.data)
+				}).catch(err => console.log(err))
+			}
 		}
 	}
 </script>
@@ -183,7 +209,6 @@
 			top 0
 			width 100%
 			z-index 99
-			// background #ccc
 			.loaction-wrapper
 				position relative
 				padding-left 5rpx
@@ -211,7 +236,6 @@
 				.page-content
 					min-height 1600rpx
 					background $cl-background
-					// border-radius 40rpx 40rpx 0 0 
 					margin-top 170rpx
 					// padding 20rpx
 					.bg-cord
@@ -285,6 +309,9 @@
 						.left-pic-add-icon
 							font-size 98rpx
 							color #ccc
+						.life-pic
+							height 100rpx
+							width 100rpx
 		.send-my-card-wrapper
 				position fixed
 				bottom 40rpx
